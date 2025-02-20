@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Chat</title>
+    <style>
+        body {
+            background-color: red;  /* Set background to red */
+            color: yellow;
+            font-family: Arial, sans-serif;
+        }
+        .chat-container {
+            width: 70%;
+            margin: 0 auto;
+            background-color: #990000;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .chat-header {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .chat-box {
+            height: 400px;
+            overflow-y: scroll;
+            border: 2px solid yellow;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #8B0000;
+        }
+        .message {
+            margin: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .message .user {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .message img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .message.me {
+            color: blue;
+            text-align: right;  /* Align Gentil's messages to the right */
+        }
+        .message.other {
+            color: red;
+            text-align: left;  /* Align others' messages to the left */
+        }
+        .input-area {
+            display: flex;
+            justify-content: space-between;
+        }
+        .input-area input {
+            width: 60%;
+            padding: 10px;
+            border: 2px solid yellow;
+            border-radius: 5px;
+            background-color: #8B0000;
+            color: yellow;
+        }
+        .input-area button, .input-area label {
+            padding: 10px;
+            background-color: yellow;
+            color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .input-area button:hover, .input-area label:hover {
+            background-color: #ffcc00;
+        }
+        .input-area input[type="file"] {
+            display: none;
+        }
+        .input-area .file-label {
+            cursor: pointer;
+        }
+        .video-call, .voice-message, .image-message {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .video-call button, .voice-message button, .image-message button {
+            padding: 10px;
+            background-color: yellow;
+            color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .image-preview {
+            max-width: 100px;
+            max-height: 100px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">
+        Family Chat
+    </div>
+
+    <div class="chat-box" id="chatBox">
+        <!-- Messages will appear here -->
+        <div class="message me">
+            <img src="gentil.jpg" alt="Gentil">
+            <span class="user">Gentil:</span> Hello, family!
+        </div>
+        <div class="message other">
+            <img src="dad.jpg" alt="Dad">
+            <span class="user">Dad:</span> Hi there, Gentil!
+        </div>
+        <div class="message other">
+            <img src="mom.jpg" alt="Mom">
+            <span class="user">Mom:</span> How is everyone?
+        </div>
+        <div class="message other">
+            <img src="bobo.jpg" alt="Bobo">
+            <span class="user">Bobo:</span> What's up, guys?
+        </div>
+        <div class="message other">
+            <img src="enzo.jpg" alt="Enzo">
+            <span class="user">Enzo:</span> Ready for a video call!
+        </div>
+        <div class="message other">
+            <img src="belle.jpg" alt="Belle">
+            <span class="user">Belle:</span> Can't wait to chat!
+        </div>
+        <div class="message other">
+            <img src="liza.jpg" alt="Liza">
+            <span class="user">Liza:</span> Hi everyone! Excited to chat!
+        </div>
+        <!-- More messages -->
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+
+        <!-- Image upload input -->
+        <label for="imageInput" class="file-label">Send Image</label>
+        <input type="file" id="imageInput" accept="image/*" onchange="sendImage()">
+    </div>
+
+    <div class="video-call">
+        <button onclick="startVideoCall()">Start Video Call</button>
+    </div>
+
+    <div class="voice-message">
+        <button onclick="sendVoiceMessage()">Send Voice Message</button>
+    </div>
+
+    <div class="image-message" id="imagePreviewSection"></div>
+</div>
+
+<script>
+    let userName = "Gentil"; // Your name (Gentil)
+
+    function sendMessage() {
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value.trim();
+        if (message) {
+            const chatBox = document.getElementById('chatBox');
+            const newMessage = document.createElement('div');
+            newMessage.classList.add('message', 'me');
+            newMessage.innerHTML = `<img src="gentil.jpg" alt="Gentil"><span class="user">${userName}:</span> ${message}`;
+            chatBox.appendChild(newMessage);
+            messageInput.value = ''; // Clear input
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+        }
+    }
+
+    function sendImage() {
+        const imageInput = document.getElementById('imageInput');
+        const chatBox = document.getElementById('chatBox');
+        const file = imageInput.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newMessage = document.createElement('div');
+                newMessage.classList.add('message', 'me');
+                newMessage.innerHTML = `<img src="gentil.jpg" alt="Gentil"><span class="user">${userName}:</span> <img src="${e.target.result}" class="image-preview">`;
+                chatBox.appendChild(newMessage);
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function startVideoCall() {
+        alert("Video call feature is not implemented yet.");
+        // To implement video calling, you'd need WebRTC or third-party services.
+    }
+
+    function sendVoiceMessage() {
+        alert("Voice message feature is not implemented yet.");
+        // To implement voice messages, you need to record and send audio data.
+    }
+</script>
+
+</body>
+</html>
